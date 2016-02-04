@@ -8,6 +8,7 @@ void decrypt (uint32_t* v, uint32_t* k);
 void encryptBlock(uint8_t * data, uint32_t * key);
 void decryptBlock(uint8_t * data, uint32_t * key);
 #endif
+//ICEMAN1001's CODE
 #ifndef ROTR
 # define ROTR(x,n) (((uintmax_t)(x) >> (n)) | ((uintmax_t)(x) << ((sizeof(x) * 8) - (n))))
 #endif
