@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "tea.h"
 #include "LEGOchar.h"
-uint32_t ul_ev1_pwdgenC(uint8_t* uid){
+uint32_t pwdgen(uint8_t* uid){
 	uint32_t pwd = 0;
 	uint8_t base[] = {
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x28,
