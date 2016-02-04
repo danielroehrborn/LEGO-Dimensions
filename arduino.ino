@@ -108,8 +108,8 @@ void loop(void) {
       data37[1]=data8[6];
       data37[2]=data8[5];
       data37[3]=data8[4];
-      nfc.PrintHexChar(data36, 4);
-      nfc.PrintHexChar(data37, 4);
+      //nfc.PrintHexChar(data36, 4); for Debug
+      //nfc.PrintHexChar(data37, 4); for Debug
       data32[0]=pwdgen(uid);
       data43[0]=data8[3];
       data43[1]=data8[2];
