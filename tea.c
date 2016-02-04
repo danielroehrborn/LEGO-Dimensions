@@ -4,54 +4,42 @@
  *   Encrypts byte array data of length len with key key using TEA
  * Arguments:
  *   data - pointer to 8 bit data array to be encrypted - SEE NOTES
- *   len - length of array
  *   key - Pointer to four integer array (16 bytes) holding TEA key
  * Returns:
  *   data - encrypted data held here
- *   len - size of the new data array
- * Side effects:
- *   Modifies data and len
  * NOTES:
- * data size must be equal to or larger than ((len + 7) / 8) * 8 + 8
  * TEA encrypts in 8 byte blocks, so it must include enough space to
  * hold the entire data to pad out to an 8 byte boundary, plus another
  * 8 bytes at the end to give the length to the decrypt algorithm.
- *
- *  - Shortcut - make sure that data is at least len + 15 bytes in size.
  */
 void encryptBlock(uint8_t * data, uint32_t * key)
 {
-   uint32_t i,blocks;
+   uint32_t i;
    uint32_t* data32;
    data32 = (uint32_t *) data;
-  flipBytes(data32);
+   flipBytes(data32);
    for(i = 0; i< 2; i++)
    {
-
       encrypt(&data32[i*2], key);
    }
 }
 
 /* decryptBlock
- *   Decrypts byte array data of length len with key key using TEA
+ *   Decrypts byte array data  with key key using TEA
  * Arguments:
  *   data - pointer to 8 bit data array to be decrypted - SEE NOTES
- *   len - length of array
  *   key - Pointer to four integer array (16 bytes) holding TEA key
  * Returns:
  *   data - decrypted data held here
- *   len - size of the new data array
- * Side effects:
- *   Modifies data and len
  * NOTES:
  *   None
  */
 void decryptBlock(uint8_t * data, uint32_t * key)
 {
-   uint32_t i,blocks;
+   uint32_t i;
    uint32_t* data32;
    data32 = (uint32_t *) data;
-  flipBytes(data32);
+   flipBytes(data32);
    for(i = 0; i< 2; i++)
    {
       decrypt(&data32[i*2], key);
@@ -59,6 +47,7 @@ void decryptBlock(uint8_t * data, uint32_t * key)
 }
 
 /* encrypt
+ * CODE FROM WIKI
  *   Encrypt 64 bits with a 128 bit key using TEA
  *   From http://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
  * Arguments:
@@ -128,5 +117,3 @@ void decrypt (uint32_t* v, uint32_t* k)
     v[0] = v0;
     v[1] = v1;
 }
-
-
