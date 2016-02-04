@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+uint8_t  decr(uint8_t* uid, uint32_t* data);
+uint32_t pwdgen(uint8_t* uid);
+void encr(uint8_t* uid, uint8_t charid, uint32_t* data);
 #endif
 
 #ifndef ROTR
