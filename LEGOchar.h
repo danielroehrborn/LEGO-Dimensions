@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-uint8_t  decr(uint8_t* uid, uint32_t* data);
-uint32_t pwdgen(uint8_t* uid);
-void encr(uint8_t* uid, uint8_t charid, uint32_t* data);
+
+
+uint8_t  decryptID(uint8_t* uid, uint8_t* data);
+void pwdgen(uint8_t* uid,uint8_t* PWDOUT);
+void encryptID(uint8_t* uid, uint8_t charid, uint8_t* data);
+
 #endif
 
 #ifndef ROTR
@@ -19,6 +22,6 @@ void encr(uint8_t* uid, uint8_t charid, uint32_t* data);
 #endif
 #ifndef BSWAP_32
 #define BSWAP_32(x) \
-     ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
-      (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
+  ((((x) & 0xff000000) >> 24) | (((x) & 0x00ff0000) >>  8) | \
+   (((x) & 0x0000ff00) <<  8) | (((x) & 0x000000ff) << 24))
 #endif
