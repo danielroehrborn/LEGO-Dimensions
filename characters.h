@@ -43,5 +43,8 @@ static const char *legoCharacterStr[] = {
 	"Unikitty",
 	"Wicked Witch",
 	"Superwoman",
-	"Zane"
+	"Zane",
+  "Green Arrow",
+  "Super Girl",
+  "Test 47"
 };

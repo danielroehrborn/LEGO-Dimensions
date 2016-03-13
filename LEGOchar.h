@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 
-uint8_t  decryptID(uint8_t* uid, uint8_t* data);
+uint8_t decryptID(uint8_t* uid, uint8_t* data);
 void pwdgen(uint8_t* uid,uint8_t* PWDOUT);
 void encryptID(uint8_t* uid, uint8_t charid, uint8_t* data);
 

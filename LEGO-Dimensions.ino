@@ -72,37 +72,49 @@ void setup(void) {
   Serial.print("Found chip PN5"); Serial.println((versiondata >> 24) & 0xFF, HEX);
   Serial.print("Firmware ver. "); Serial.print((versiondata >> 16) & 0xFF, DEC);
   Serial.print('.'); Serial.println((versiondata >> 8) & 0xFF, DEC);
-
   // configure board to read RFID tags
   nfc.SAMConfig();
-
   Serial.println("Waiting for an ISO14443A Card ...");
 }
 
 void loop(void) {
-int c;
-String charArray;
+  uint8_t c=1,i=0;
+  String charArray;
+  uint16_t x = 0;
 
-
-
-
- int i = 0;
-    
-    
-        delay(1);
-        charArray= Serial.readStringUntil('#');     //Read command in array until #
-        if (charArray[0]=='r') { //if r# -- read tag
-    readtag();
-          
-        }
-        
-  if (charArray[0]=='w') { //if w# write to tag
-     WriteTag(15, 1);		//where 15 char id from 1 to 45 and 1000 to 1999 for vehicle
-  }
   
 
+  delay(1);
+  charArray = Serial.readStringUntil('#');    //Read command in array until #
+  if (charArray[0] == 'r') { //if r# -- read tag
+    readtag();
+  }
 
+  if (charArray[0] == 'w') { //if w# write to tag
+    c=1;
+    x=0;
+    i=0;
+    while (charArray[c]!='\0'){
+      i=(int)charArray[c];
+      i=i-48;
+      x=x*10+i;
+      c++;
+      }
+       if (x < 50) {
+        Serial.println(legoCharacterStr[x]);
+        WriteTag(x, 1);    //where 15 char id from 1 to 45 or  1000 to 1999 for vehicle
+      }
+
+      if ((x >= 1000)&(x<=1169)) {
+        Serial.println(legoVehicleStr[x - 1000]);
+        WriteTag(x, 1);    //where 15 char id from 1 to 45 or  1000 to 1999 for vehicle
+      }
+    
+//    WriteTag(x, 1);		//where 15 char id from 1 to 45 or  1000 to 1999 for vehicle
+  }
 }
+
+
 void readtag() {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
@@ -118,7 +130,6 @@ void readtag() {
     nfc.PrintHex(uid, uidLength);
     Serial.println("");
 
-
     if (uidLength == 7)
     {
       uint8_t  data[4];
@@ -128,11 +139,10 @@ void readtag() {
       uint8_t data43[4] = {0x00, 0x00, 0x00, 0x00};
       // We probably have an NTAG2xx card (though it could be Ultralight as well)
       Serial.println("Seems to be an NTAG2xx tag (7 byte UID)");
-      
+
       for (uint8_t i = 0; i < 42; i++)
       {
         success = nfc.ntag2xx_ReadPage(i, data);
-
         // Display the current page number
         Serial.print("PAGE ");
         if (i < 10)
@@ -161,6 +171,7 @@ void readtag() {
   }
 }
 
+
 uint8_t WriteTag(uint16_t charid, boolean backup) {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
@@ -175,7 +186,6 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
     Serial.print("  UID Value: ");
     nfc.PrintHex(uid, uidLength);
     Serial.println("");
-
 
     if (uidLength == 7)
     {
@@ -199,7 +209,7 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
       // NTAG 213       45      4             39
       // NTAG 215       135     4             129
       // NTAG 216       231     4             225
- 
+
       if (backup) {
         for (uint8_t i = 0; i < 45; i++)
         {
@@ -258,7 +268,7 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
         }
       }
       pwdgen(uid, data43);		//Gen PWD
-      
+
       if (charid < 0xFF) {
         Serial.println(legoCharacterStr[charid]);
         encryptID(uid, charid, datachar);	//Encrypt Character
@@ -285,8 +295,6 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
         }
       }
 
-
-
       if (charid >= 1000) {
         Serial.println(legoVehicleStr[charid - 1000]);
         data0[0] = charid & 0xff;
@@ -303,39 +311,38 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
         {
           Serial.println("Unable to read the requested page!");
         }
-/*		//test powerup's
-        data0[0] = 0x76;
-        data0[1] = 0xD4;
-        data0[2] = 0x30;
-        data0[3] = 0x18;
-        success = nfc.ntag2xx_WritePage(35, data0);
-        if (success)
-        {
-          Serial.print("Page35_Vehicle_:");
-          nfc.PrintHexChar(data0, 4);
-        }
-        else
-        {
-          Serial.println("Unable to read the requested page!");
-        }
-        data0[0] = 0xFF;
-        data0[1] = 0x0;
-        data0[2] = 0x0;
-        data0[3] = 0x0;
-        success = nfc.ntag2xx_WritePage(37, data0);
-        if (success)
-        {
-          Serial.print("Page37_Vehicle_:");
-          nfc.PrintHexChar(data0, 4);
-        }
-        else
-        {
-          Serial.println("Unable to read the requested page!");
-        }
-*/
+        /*		//test powerup's
+                data0[0] = 0x76;
+                data0[1] = 0xD4;
+                data0[2] = 0x30;
+                data0[3] = 0x18;
+                success = nfc.ntag2xx_WritePage(35, data0);
+                if (success)
+                {
+                  Serial.print("Page35_Vehicle_:");
+                  nfc.PrintHexChar(data0, 4);
+                }
+                else
+                {
+                  Serial.println("Unable to read the requested page!");
+                }
+                data0[0] = 0xFF;
+                data0[1] = 0x0;
+                data0[2] = 0x0;
+                data0[3] = 0x0;
+                success = nfc.ntag2xx_WritePage(37, data0);
+                if (success)
+                {
+                  Serial.print("Page37_Vehicle_:");
+                  nfc.PrintHexChar(data0, 4);
+                }
+                else
+                {
+                  Serial.println("Unable to read the requested page!");
+                }
+        */
 
-
-        success = nfc.ntag2xx_WritePage(38, data38); //00 01 
+        success = nfc.ntag2xx_WritePage(38, data38); //00 01
         if (success)
         {
           Serial.print("Page38_Vehicle_:");
@@ -358,7 +365,5 @@ uint8_t WriteTag(uint16_t charid, boolean backup) {
         Serial.println("Unable to read the requested page!");
       }
     }
-
   }
-
 }
