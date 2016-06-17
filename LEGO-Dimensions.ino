@@ -81,12 +81,13 @@ void loop(void) {
   uint8_t c=1,i=0;
   String charArray;
   uint16_t x = 0;
-
-  
+charArray="";
 
   delay(1);
   charArray = Serial.readStringUntil('#');    //Read command in array until #
+   Serial.println(charArray);
   if (charArray[0] == 'r') { //if r# -- read tag
+    Serial.println("read tag");
     readtag();
   }
 
